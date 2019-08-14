@@ -12,6 +12,7 @@ print("comecou")
 
 from enlace import *
 import time
+from tkinter import filedialog, Tk
 
 
 
@@ -58,10 +59,14 @@ def main():
     
     #exemplo2
     #txBuffer = bytes([2]) + bytes([3])+ bytes("teste", 'utf-8')
-    with open ("insper.jpg", "rb") as img:
-      img = img.read()
-      txBuffer = bytearray(img)
 
+    root = Tk()
+    root.withdraw
+
+    filename = filedialog.askopenfilename()
+
+    with open (filename, "rb") as img:
+      txBuffer = img.read()
     
     
     txLen    = len(txBuffer)
