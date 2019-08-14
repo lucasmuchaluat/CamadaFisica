@@ -14,6 +14,7 @@ from enlace import *
 import time
 
 
+
 # Serial Com Port
 #   para saber a sua porta, execute no terminal :
 #   python -m serial.tools.list_ports
@@ -22,6 +23,13 @@ import time
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 serialName = "COM5"                  # Windows(variacao de)
 print("abriu com")
+
+def check (original, recebida):
+  if original == recebida:
+    return True
+  else:
+    return False
+    
 
 def main():
     # Inicializa enlace ... variavel com possui todos os metodos e propriedades do enlace, que funciona em threading
@@ -59,7 +67,7 @@ def main():
     txLen    = len(txBuffer)
     print(txLen)
 
-    txLen_bytes = txLen.to_bytes(length=2,byteorder='big')
+    txLen_bytes = txLen.to_bytes(length=3,byteorder='big')
     # barra = bytearray(b'barra')
     data = txLen_bytes + txBuffer # + barra 
 
@@ -67,6 +75,7 @@ def main():
     # Transmite dado
     print("tentado transmitir .... {} bytes".format(txLen))
     com.sendData(data)
+    seconds = time.time()
 
     # espera o fim da transmissão
     while(com.tx.getIsBussy()):
@@ -89,10 +98,26 @@ def main():
     # print (rxBuffer)
     print("Buffer transmitido para o outro Arduino")
 
-    with open ("insper_after.jpg", "wb") as img_final:
-      img_final.write(txBuffer)
 
-    print(txBuffer)
+    # with open ("insper_after.jpg", "wb") as img_final:
+    #   img_final.write(txBuffer)
+
+    print("Aguardando a resposta do Client ....")
+
+    # Faz a recepção dos dados
+    print ("Recebendo dados do Client .... ")
+
+    rxBuffer_check, nRx_check = com.getData(2)
+
+    delta_time = time.time() - seconds
+
+    received = int.from_bytes(rxBuffer_check, "big")
+
+    print("check: {}".format(check(txLen,received)))
+    
+    print("taxa: {} bytes/sec".format(received/delta_time))
+
+
 
     # Encerra comunicação
     print("-------------------------")
