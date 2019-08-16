@@ -43,13 +43,21 @@ def main():
 
 
 
-  
 
  
     print ("Recebendo dados .... ")
     
+    # head = bytearray()
+    # should_stop = False
+    # while not should_stop:
+    #     rxBuffer, nRx = com.getData(1)
+    #     if bytes([3]) in buffer: # b'barra'
+    #         should_stop = True
+    #     else:
+    #         buffer += rxBuffer
 
-
+    # buffer = buffer[:-5]
+        
 
     rxBuffer, nRx = com.getData(3)
 

@@ -39,44 +39,52 @@ def main():
 
     # Carrega dados
     print ("gerando dados para transmissao :")
-
-
-
-
   
+      #no exemplo estamos gerando uma lista de bytes ou dois bytes concatenados
+    
+    #exemplo 1
+    #ListTxBuffer =list()
+    #for x in range(1,10):
+    #    ListTxBuffer.append(x)
+    #txBuffer = bytes(ListTxBuffer)
+    
+    #exemplo2
+    #txBuffer = bytes([2]) + bytes([3])+ bytes("teste", 'utf-8')
+    with open ("insper.jpg", "rb") as img:
+      img = img.read()
+      txBuffer = bytearray(img)
 
- 
+    
+    
+    txLen    = len(txBuffer)
+    print(txLen)
+
+    # Transmite dado
+    print("tentado transmitir .... {} bytes".format(txLen))
+    com.sendData(txBuffer)
+
+    # espera o fim da transmissão
+    #while(com.tx.getIsBussy()):
+    #    pass
+    
+    
+    # Atualiza dados da transmissão
+    txSize = com.tx.getStatus()
+    print ("Transmitido       {} bytes ".format(txSize))
+
+    # Faz a recepção dos dados
     print ("Recebendo dados .... ")
     
-
-
-
-    rxBuffer, nRx = com.getData(3)
-
-    print("Tamanho:")
-    print(int.from_bytes(rxBuffer, "big"))
-
-    
-
-    rxBuffer, nRx = com.getData(int.from_bytes(rxBuffer, "big"))
-
-    with open("img_received.jpg", "wb") as image:
-        image.write(rxBuffer)
+    #repare que o tamanho da mensagem a ser lida é conhecida!     
+    rxBuffer, nRx = com.getData(txLen)
 
     # log
     print ("Lido              {} bytes ".format(nRx))
     
     print (rxBuffer)
 
-    rxLen_bytes = nRx.to_bytes(length=2,byteorder='big')
-    # barra = bytearray(b'barra')
-    
-
-    print("Transmitido o tamanho {} para o Server".format(nRx))
-    com.sendData(rxLen_bytes)
-    # espera o fim da transmissão
-    while(com.tx.getIsBussy()):
-       pass
+    with open ("insper_after.jpg", "wb") as img_final:
+      img_final.write(rxBuffer)
 
     
 
