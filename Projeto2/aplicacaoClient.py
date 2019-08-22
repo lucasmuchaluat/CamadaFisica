@@ -20,7 +20,7 @@ import time
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM4"                  # Windows(variacao de)
+serialName = "COM5"                  # Windows(variacao de)
 print("abriu com")
 
 def main():
@@ -59,7 +59,7 @@ def main():
     # buffer = buffer[:-5]
         
 
-    rxBuffer, nRx = com.getData(3)
+    rxBuffer, nRx = com.getData(3) #vai ler 10 dps, por enquanto deixa 3 pra testar
 
     print("Tamanho:")
     print(int.from_bytes(rxBuffer, "big"))

@@ -22,7 +22,7 @@ from tkinter import filedialog, Tk
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM5"                  # Windows(variacao de)
+serialName = "COM6"                  # Windows(variacao de)
 print("abriu com")
 
 def check (original, recebida):
@@ -37,30 +37,30 @@ def head (file):
 
   txLen_bytes = txLen.to_bytes(length=3,byteorder='big')
 
-  head = txLen_bytes + bytes(7)
+  head = txLen_bytes # + bytes(7)
   # barra = bytearray(b'barra')
   data = head + file # + barra
   
-  return data
+  return data, txLen
 
-def eop (headfile, eop):
-  return data
-
-def payload_correction (headfileeop, eop):
+def payload_correction (headfile, len_data):
   buffer = bytearray()
-  should_stop = False
-  esc = b'0x00'
-  rxBuffer, nRx = com.getData(1)
-  if eop in buffer: # b'barra' ou bytes([3])
-      should_stop = True
-      #BYTE STUFFING
+  eop = b'eop'
+  for contador in range (len_data + 10): # head tem 10 bytes
+    rxBuffer, nRx = com.getData(1) # aqui n faz sentido ser getData pq n tem nd no arduino ainda
+    if eop in buffer: # b'barra' ou bytes([3])
+        #BYTE STUFFING
+        buffer = buffer[:-3]
+        buffer += b'0e0o0p'
+    else:
+        buffer += rxBuffer
 
-  else:
-      buffer += rxBuffer
+  return buffer
 
-    # buffer = buffer[:-5]
+def eop (headfile):
+  eop = b'eop'
+  data = headfile + eop
   return data
-
     
 
 def main():
@@ -109,8 +109,9 @@ def main():
     # # barra = bytearray(b'barra')
     # data = head + txBuffer # + barra 
 
-    data = head(txBuffer)
-
+    data, txLen = head(txBuffer)
+    data = payload_correction(data, txLen)
+    data = eop(data)
     
     # Transmite dado
     print("tentado transmitir .... {} bytes".format(txLen))
