@@ -46,14 +46,16 @@ def head (file):
 def payload_correction (headfile, len_data):
   buffer = bytearray()
   eop = b'eop'
-  for contador in range (len_data + 10): # head tem 10 bytes
-    rxBuffer, nRx = com.getData(1) # aqui n faz sentido ser getData pq n tem nd no arduino ainda
+  for i in headfile:
+  # for contador in range (len_data + 10): # head tem 10 bytes
+  #   rxBuffer, nRx = com.getData(1) # aqui n faz sentido ser getData pq n tem nd no arduino ainda
     if eop in buffer: # b'barra' ou bytes([3])
         #BYTE STUFFING
         buffer = buffer[:-3]
         buffer += b'0e0o0p'
+        buffer += i
     else:
-        buffer += rxBuffer
+        buffer += i
 
   return buffer
 
