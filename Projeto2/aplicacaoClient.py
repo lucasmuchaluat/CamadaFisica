@@ -10,8 +10,11 @@
 
 print("comecou")
 
+
 from enlace import *
 import time
+
+
 
 
 # Serial Com Port
@@ -20,7 +23,7 @@ import time
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM5"                  # Windows(variacao de)
+serialName = "COM12"                  # Windows(variacao de)
 print("abriu com")
 
 def main():
@@ -57,31 +60,130 @@ def main():
     #         buffer += rxBuffer
 
     # buffer = buffer[:-5]
-        
 
-    rxBuffer, nRx = com.getData(3) #vai ler 10 dps, por enquanto deixa 3 pra testar
+
+    rxBuffer_len, nRx = com.getData(3) #vai ler 10 dps, por enquanto deixa 3 pra testar
 
     print("Tamanho:")
-    print(int.from_bytes(rxBuffer, "big"))
+    print(int.from_bytes(rxBuffer_len, "big"))
+
+    
+    rxBuffer, nRx = com.getData(7)
+
+    rxBuffer_eop, nRx = com.getData(int.from_bytes(rxBuffer_len, "big"))
+
+
+
+
+    buffer_len = 0
+    begin_position = 0
+    buffer = bytearray()
+    #Verificar se o EOP existe
+    if b'eop' in rxBuffer_eop:
+        #Verificar se o EOP está na posição correta
+        if b'eop' in rxBuffer_eop[-1:-4]:
+            #Localizar a posição do EOP
+            for i in rxBuffer_eop:
+                buffer_len += 1
+                if b'eop' in buffer:
+                    begin_position -= 2
+                    
+
+
+                else:
+                    buffer += i
+                    begin_position += 1
+        else:
+            begin_position = 1
+    else:
+        begin_position = 0
+
+    
+    buffer_len = buffer_len - 3
+
+    rxBuffer_len = int.from_bytes(rxBuffer_len, "big") - 3
+
+    if buffer_len != rxBuffer_len:
+        len_payload = 0
+    else:
+        len_payload = 1
+
+
+
+
+    #Desprezar o byte stuffing
+    if b'0e0o0p' in rxBuffer_eop:
+        rxBuffer_eop.replace(b'0e0o0p', b'eop')
+
+
+
+        
+
+
 
     
 
-    rxBuffer, nRx = com.getData(int.from_bytes(rxBuffer, "big"))
 
-    with open("img_received.jpg", "wb") as image:
-        image.write(rxBuffer)
+
+
+
+
+    
+
+    
+
+
+
+
+    
+
+
+
+
+    # barra = bytearray(b'barra')
+    
+
+
+    with open("file_received.txt", "wb") as info:
+        info.write(rxBuffer)
 
     # log
     print ("Lido              {} bytes ".format(nRx))
     
     print (rxBuffer)
 
-    rxLen_bytes = nRx.to_bytes(length=2,byteorder='big')
+    print("EOP localizado na posição {}".format(begin_position))
+
+
+    
+
+    position_eop = begin_position.to_bytes(length=2,byteorder='big')
+
+    len_payload = len_payload.to_bytes(length=2,byteorder='big')
+
+    data = bytearray()
+
+
+
+    print(position_eop)
+    print(len_payload)
+
+    data += position_eop
+    data += len_payload
+
+
+    print(data)
+
+
+
+
     # barra = bytearray(b'barra')
+
+
     
 
     print("Transmitido o tamanho {} para o Server".format(nRx))
-    com.sendData(rxLen_bytes)
+    com.sendData(data)
     # espera o fim da transmissão
     while(com.tx.getIsBussy()):
        pass
