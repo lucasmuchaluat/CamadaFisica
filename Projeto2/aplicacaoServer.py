@@ -22,7 +22,7 @@ from tkinter import filedialog, Tk
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM6"                  # Windows(variacao de)
+serialName = "COM10"                  # Windows(variacao de)
 print("abriu com")
 
 def check (original, recebida):
@@ -52,10 +52,10 @@ def payload_correction (headfile, len_data):
     if eop in buffer: # b'barra' ou bytes([3])
         #BYTE STUFFING
         buffer = buffer[:-3]
-        buffer += b'0e0o0p'
-        buffer += i
+        buffer.append(b'0e0o0p')
+        buffer.append(i)
     else:
-        buffer += i
+        buffer.append(i)
 
   return buffer
 
