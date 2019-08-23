@@ -23,7 +23,7 @@ import time
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM12"                  # Windows(variacao de)
+serialName = "COM16"                  # Windows(variacao de)
 print("abriu com")
 
 def main():
@@ -31,6 +31,8 @@ def main():
     com = enlace(serialName) # repare que o metodo construtor recebe um string (nome)
     # Ativa comunicacao
     com.enable()
+
+
 
    
 
@@ -70,8 +72,10 @@ def main():
     
     rxBuffer, nRx = com.getData(7)
 
+    seconds = time.time()
     rxBuffer_eop, nRx = com.getData(int.from_bytes(rxBuffer_len, "big"))
 
+    
 
 
 
@@ -81,7 +85,7 @@ def main():
     #Verificar se o EOP existe
     if b'eop' in rxBuffer_eop:
         #Verificar se o EOP está na posição correta
-        if b'eop' in rxBuffer_eop[-1:-4]:
+        if b'eop' in rxBuffer_eop[-3:]:
             #Localizar a posição do EOP
             for i in rxBuffer_eop:
                 buffer_len += 1
@@ -91,7 +95,7 @@ def main():
 
 
                 else:
-                    buffer += i
+                    buffer.append(i)
                     begin_position += 1
         else:
             begin_position = 1
@@ -142,6 +146,8 @@ def main():
 
     # barra = bytearray(b'barra')
     
+    delta_t = time.time() - seconds
+    
 
 
     with open("file_received.txt", "wb") as info:
@@ -165,14 +171,13 @@ def main():
 
 
 
-    print(position_eop)
-    print(len_payload)
 
     data += position_eop
     data += len_payload
 
 
-    print(data)
+
+    print("Taxa de download: ", rxBuffer_len/delta_t)
 
 
 
@@ -183,7 +188,12 @@ def main():
     
 
     print("Transmitido o tamanho {} para o Server".format(nRx))
+
+
     com.sendData(data)
+
+    
+
     # espera o fim da transmissão
     while(com.tx.getIsBussy()):
        pass
