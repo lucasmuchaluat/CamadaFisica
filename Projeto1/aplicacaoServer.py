@@ -22,7 +22,7 @@ from tkinter import filedialog, Tk
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM5"                  # Windows(variacao de)
+serialName = "COM9"                  # Windows(variacao de)
 print("abriu com")
 
 def check (original, recebida):

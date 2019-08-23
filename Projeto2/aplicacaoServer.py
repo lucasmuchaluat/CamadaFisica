@@ -22,7 +22,7 @@ from tkinter import filedialog, Tk
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM10"                  # Windows(variacao de)
+serialName = "COM11"                  # Windows(variacao de)
 print("abriu com")
 
 def check (original, recebida):
@@ -37,27 +37,30 @@ def head (file):
 
   txLen_bytes = txLen.to_bytes(length=3,byteorder='big')
 
-  head = txLen_bytes # + bytes(7)
+  head = txLen_bytes + bytes(7)
   # barra = bytearray(b'barra')
   data = head + file # + barra
-  
-  return data, txLen
 
-def payload_correction (headfile, len_data):
+  totalLen = len(data)
+  
+  return data, txLen, totalLen
+
+def payload_correction (file):
+  payload_only_len = len(file)
   buffer = bytearray()
   eop = b'eop'
-  for i in headfile:
+  for i in file:
   # for contador in range (len_data + 10): # head tem 10 bytes
   #   rxBuffer, nRx = com.getData(1) # aqui n faz sentido ser getData pq n tem nd no arduino ainda
     if eop in buffer: # b'barra' ou bytes([3])
         #BYTE STUFFING
         buffer = buffer[:-3]
-        buffer.append(b'0e0o0p')
+        buffer += b'0e0o0p'
         buffer.append(i)
     else:
         buffer.append(i)
 
-  return buffer
+  return buffer, payload_only_len
 
 def eop (headfile):
   eop = b'eop'
@@ -111,14 +114,17 @@ def main():
     # # barra = bytearray(b'barra')
     # data = head + txBuffer # + barra 
 
-    data, txLen = head(txBuffer)
-    data = payload_correction(data, txLen)
+    data, payload_only_len = payload_correction(txBuffer)
     data = eop(data)
+    data, txLen, totalLen = head(data)
+
+    print(data.decode("latin-1"))
     
     # Transmite dado
     print("tentado transmitir .... {} bytes".format(txLen))
-    com.sendData(data)
     seconds = time.time()
+    com.sendData(data)
+    
 
     # espera o fim da transmissão
     while(com.tx.getIsBussy()):
@@ -150,15 +156,33 @@ def main():
     # Faz a recepção dos dados
     print ("Recebendo dados do Client .... ")
 
-    rxBuffer_check, nRx_check = com.getData(2)
 
-    delta_time = time.time() - seconds
+    delta_t = time.time() - seconds
 
-    received = int.from_bytes(rxBuffer_check, "big")
+    position_eop, nRx_position = com.getData(2)
+    len_payload, nRx_payload = com.getData(2)
 
-    print("check: {}".format(check(txLen,received)))
-    
-    print("taxa: {} bytes/sec".format(received/delta_time))
+    position_eop_received = int.from_bytes(position_eop, "big")
+    payload_received = int.from_bytes(len_payload, "big")
+
+    print("Taxa de  envio: {} bytes/segundo".format(payload_only_len/delta_t))
+
+    overhead = 100*(totalLen/payload_only_len)
+    print("OVERHEAD: {} %".format(overhead))
+
+    if position_eop_received == 0:
+      print("EOP nao existe, por favor, revise o empacotamento!")
+    elif position_eop_received == 1:
+      print("EOP esta na posicao errada")
+    else:
+      print("EOP beggining position: {}".format(position_eop_received))
+
+    if payload_received == 0:
+      print("Payload não corresponde ao informado no head")
+    else:
+      print("Payload corresponde com o informado no head")
+
+
 
 
 
