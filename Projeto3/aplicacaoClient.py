@@ -9,7 +9,15 @@
 ####################################################
 from enlace import *
 import time
-serialName = "COM16"                  # Windows(variacao de)
+
+
+# Serial Com Port
+#   para saber a sua porta, execute no terminal :
+#   python -m serial.tools.list_ports
+
+#serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
+#serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
+serialName = "COM12"                  # Windows(variacao de)
 
  #=======================================================
 def add_head (payload, total_of_packages, current_package, message):
@@ -19,7 +27,7 @@ def add_head (payload, total_of_packages, current_package, message):
   total_of_packages_bytes = total_of_packages.to_bytes(3, "big")
   current_package_bytes = current_package.to_bytes(3, "big")
 #         size*1     + current package*3     + total packages*3        + null bytes*2    + response byte*1 = 10 bytes
-  head = txLen_bytes + current_package_bytes + total_of_packages_bytes + bytes([0x00])*2 + bytes([message])
+  head = txLen_bytes + current_package_bytes + total_of_packages_bytes + bytes([0x00])*2 + message
   package = head + payload # + barra
 
   packageLen = len(package)
@@ -47,11 +55,11 @@ def main():
 	print("-------------------------")
 
 	current_package = 1
-	total_of_packages = 1
+	total_of_packages = 2
 
 	data = bytearray()
 
-	while current_package <= total_of_packages:
+	while current_package < total_of_packages:
 		while com.rx.getIsEmpty():
 			pass
 # size*1 + current package*3 + total packages*3 + null bytes*2 + response byte*1 = 10 bytes
@@ -65,7 +73,7 @@ def main():
 			message = bytes([0x04])
 		payload_eop, payload_size = com.getData(payload_size+3)
 		eop_position = payload_eop.find(b'eop')
-		if eop_position == payload_size[0]:
+		if eop_position == payload_size-3:
 			message = bytes([0x05])
 		elif eop_position == -1:
 			message = bytes([0x01])
@@ -76,9 +84,16 @@ def main():
 		payload = payload_eop[:-3]
 		data += payload
 
-		response_head = add_head(bytes([0x00]), total_of_packages, current_package, message)
+		print(f"DATA {current_package}: {data}")
+
+		response_head = add_head(bytes([0x00]), total_of_packages, current_package, message)[0]
 		response_package = add_eop(response_head)
+		print(response_package)
+		print(f"pacote {current_package} de {total_of_packages} enviado")
 		com.sendData(response_package)
+
+	with open("data_received.txt", "wb") as info:
+		info.write(data)
 
 	# Encerra comunicação
 	print("-------------------------")
