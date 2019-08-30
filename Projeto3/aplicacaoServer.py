@@ -17,7 +17,7 @@ from tkinter import filedialog, Tk
 from math import ceil
  #=======================================================
 
-serialName = "COM11"                  # Windows(variacao de)
+serialName = "COM13"                  # Windows(variacao de)
 
 def check (original, recebida):
 	if original == recebida:
@@ -37,7 +37,7 @@ def head (payload, total_of_packages, current_package):
 
   packageLen = len(package)
   
-  return package, txLen, packageLen
+  return package #, txLen, packageLen
  #=======================================================
 
 
@@ -92,38 +92,47 @@ def main():
 	total_of_packages = ceil(data_stuffed_only_len/max_package_size)
 	current_package = 1
 
-	while current_package < total_of_packages:
-		payload = data_stuffed[max_package_size*current_package:max_package_size*(current_package+1)]
+	while current_package <= total_of_packages:
+		payload = data_stuffed[max_package_size*(current_package-1):max_package_size*(current_package)]
 		head_payload = head(payload, total_of_packages, current_package)
 		package = add_eop(head_payload)
 		com.sendData(package)
+		print(f"package: {package}")
 		while com.rx.getIsEmpty():
 			pass
 
 		response_head, head_size = com.getData(10) # read response head
 		message = response_head[9]
 		payload_size = response_head[0]
+		print(f"response head: {response_head}")
+		print(f"payload size: {payload_size}")
 		payload, payload_size = com.getData(payload_size)
+		eop_read, eop_size = com.getData(3)
+		print(f"current package: {current_package}")
+		print(f"total of package: {total_of_packages}")
 		# message interpreter
+		print("Interpreting message")
 		if message == 0x01:
 			print("0x01: EOP nao existe, por favor, revise o empacotamento!")
-		if message == 0x02:
+		elif message == 0x02:
 			print("0x02: EOP esta na posicao errada")		
-		if message == 0x03:
+		elif message == 0x03:
 			print("0x03: Payload não corresponde ao informado no head")
-		if message == 0x04:
+		elif message == 0x04:
 			print("0x04: Numero errado do pacote")
 			package_number_read = int.from_bytes(response_head[1:4], "big")
 			current_package = package_number_read
-		if message == 0x05:
+		elif message == 0x05:
 			print("0x05: Payload corresponde ao informado no head")
 			current_package +=1 			
-		if message == 0xff:
+		elif message == 0xff:
 			print("0xff: sem mensagem")
 		else:
 			print("mensagem invalida")
+		print("")
  #=======================================================
 	
+
 
 
 
