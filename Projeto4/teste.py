@@ -1,0 +1,1 @@
+print(str(bytearray(10)))
