@@ -12,6 +12,8 @@ print("comecou")
 
 from enlace import *
 import time
+from tkinter import filedialog, Tk
+
 
 
 # Serial Com Port
@@ -22,6 +24,13 @@ import time
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 serialName = "COM9"                  # Windows(variacao de)
 print("abriu com")
+
+def check (original, recebida):
+  if original == recebida:
+    return True
+  else:
+    return False
+    
 
 def main():
     # Inicializa enlace ... variavel com possui todos os metodos e propriedades do enlace, que funciona em threading
@@ -39,46 +48,81 @@ def main():
 
     # Carrega dados
     print ("gerando dados para transmissao :")
-
-
-
-
   
-
- 
-    print ("Recebendo dados .... ")
+      #no exemplo estamos gerando uma lista de bytes ou dois bytes concatenados
     
-
-
-
-    rxBuffer, nRx = com.getData(3)
-
-    print("Tamanho:")
-    print(int.from_bytes(rxBuffer, "big"))
-
+    #exemplo 1
+    #ListTxBuffer =list()
+    #for x in range(1,10):
+    #    ListTxBuffer.append(x)
+    #txBuffer = bytes(ListTxBuffer)
     
+    #exemplo2
+    #txBuffer = bytes([2]) + bytes([3])+ bytes("teste", 'utf-8')
 
-    rxBuffer, nRx = com.getData(int.from_bytes(rxBuffer, "big"))
+    root = Tk()
+    root.withdraw
 
-    with open("img_received.jpg", "wb") as image:
-        image.write(rxBuffer)
+    filename = filedialog.askopenfilename()
 
-    # log
-    print ("Lido              {} bytes ".format(nRx))
+    with open (filename, "rb") as img:
+      txBuffer = img.read()
     
-    print (rxBuffer)
+    
+    txLen    = len(txBuffer)
+    print(txLen)
 
-    rxLen_bytes = nRx.to_bytes(length=2,byteorder='big')
+    txLen_bytes = txLen.to_bytes(length=3,byteorder='big')
     # barra = bytearray(b'barra')
-    
+    data = txLen_bytes + txBuffer # + barra 
 
-    print("Transmitido o tamanho {} para o Server".format(nRx))
-    com.sendData(rxLen_bytes)
+    
+    # Transmite dado
+    print("tentado transmitir .... {} bytes".format(txLen))
+    com.sendData(data)
+    seconds = time.time()
+
     # espera o fim da transmissão
     while(com.tx.getIsBussy()):
        pass
-
     
+    
+    # Atualiza dados da transmissão
+    txSize = com.tx.getStatus()
+    print ("Transmitido       {} bytes ".format(txSize))
+
+    # Faz a recepção dos dados
+    # print ("Recebendo dados .... ")
+    
+    #repare que o tamanho da mensagem a ser lida é conhecida!     
+    # rxBuffer, nRx = com.getData(txLen)
+
+    # log
+    # print ("Lido              {} bytes ".format(nRx))
+    
+    # print (rxBuffer)
+    print("Buffer transmitido para o outro Arduino")
+
+
+    # with open ("insper_after.jpg", "wb") as img_final:
+    #   img_final.write(txBuffer)
+
+    print("Aguardando a resposta do Client ....")
+
+    # Faz a recepção dos dados
+    print ("Recebendo dados do Client .... ")
+
+    rxBuffer_check, nRx_check = com.getData(2)
+
+    delta_time = time.time() - seconds
+
+    received = int.from_bytes(rxBuffer_check, "big")
+
+    print("check: {}".format(check(txLen,received)))
+    
+    print("taxa: {} bytes/sec".format(received/delta_time))
+
+
 
     # Encerra comunicação
     print("-------------------------")
