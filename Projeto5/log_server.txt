@@ -1,0 +1,17 @@
+Msg: tipo 1 -- recebida: 2019-09-20 16:29:23.441497 –- remetente: 1
+Msg: tipo 2 -- enviada: 2019-09-20 16:29:23.447483 –- destinatário: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:25.466081 –- destinatário: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:27.478697 –- destinatário: 1
+Msg: tipo 3 -- recebida: 2019-09-20 16:29:28.443119 –- remetente: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:28.469052 –- destinatário: 1
+Msg: tipo 3 -- recebida: 2019-09-20 16:29:28.691454 –- remetente: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:28.715389 –- destinatário: 1
+Msg: tipo 3 -- recebida: 2019-09-20 16:29:28.930813 –- remetente: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:28.954749 –- destinatário: 1
+Msg: tipo 3 -- recebida: 2019-09-20 16:29:29.052489 –- remetente: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:29.184135 –- destinatário: 1
+Msg: tipo 3 -- recebida: 2019-09-20 16:29:29.300825 –- remetente: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:29.336731 –- destinatário: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:29.490336 –- destinatário: 1
+Msg: tipo 3 -- recebida: 2019-09-20 16:29:29.550156 –- remetente: 1
+Msg: tipo 4 -- enviada: 2019-09-20 16:29:29.574093 –- destinatário: 1

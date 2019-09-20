@@ -1,0 +1,16 @@
+Msg: mensagem tipo 1 – enviada: 2019-09-20 16:29:23.324842  – destinatário: Servidor 1
+Msg: mensagem tipo 2 – recebida: 2019-09-20 16:29:28.347373  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:28.358344  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:28.520910  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:28.532878  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:28.769245  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:28.781214  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:28.990653  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:29.014588  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:29.224029  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:29.253949  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:29.455409  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:29.483363  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:29.581075  – remetente: Servidor 1
+Msg: mensagem tipo 3 – enviada: 2019-09-20 16:29:29.593041  – destinatário: Servidor 1
+Msg: mensagem tipo 4 – recebida: 2019-09-20 16:29:29.713720  – remetente: Servidor 1
