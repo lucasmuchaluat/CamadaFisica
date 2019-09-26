@@ -97,9 +97,14 @@ class RX(object):
         """ Read N bytes of data from the reception buffer
         This function blocks until the number of bytes is received
         """
+        start = time.time()
 
         while(self.getBufferLen() < size):
             time.sleep(0.01)
+            delta_t = start - time.time()
+            if delta_t > 5:
+                print("Timeout")
+                break
 #                 
         return(self.getBuffer(size))
 
