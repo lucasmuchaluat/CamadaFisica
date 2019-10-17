@@ -6,7 +6,7 @@ import numpy as np
 import sounddevice as sd
 import matplotlib.pyplot as plt
 import sys
-
+import time
 
 
 def signal_handler(signal, frame):
@@ -111,6 +111,9 @@ def main():
         else:
             valid_number = False
 
+    time.sleep(3)
+    print("Iniciando o áudio em 3 segundos")
+
     #gere duas senoides para cada frequencia da tabela DTMF ! Canal x e canal y 
     #use para isso sua biblioteca (cedida)
     #obtenha o vetor tempo tb.
@@ -128,6 +131,7 @@ def main():
 
     #printe o grafico no tempo do sinal a ser reproduzido
     plt.plot(tb_y, tone)
+    plt.axis([0.16,0.195,-2,2])
     plt.title("Gráfico de sinal por tempo")
 
     # reproduz o som

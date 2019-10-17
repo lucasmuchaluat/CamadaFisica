@@ -39,7 +39,7 @@ def main():
     #use um time.sleep para a espera
 
     print("Iniciando captação do áudio em {} segundos.".format(n))
-    time.sleep(2)
+    time.sleep(n)
     
    
     #faca um print informando que a gravacao foi inicializada
@@ -92,59 +92,53 @@ def main():
     #voce deve tambem evitar que dois picos proximos sejam identificados, pois pequenas variacoes na
     #frequencia do sinal podem gerar mais de um pico, e na verdade tempos apenas 1.
    
-    indexes = peakutils.indexes(yf, thres=0.5, min_dist=15)
+    indexes = peakutils.indexes(yf, thres=0.2, min_dist=100)
     
     #printe os picos encontrados!
 
-    print(indexes) 
-    print(xf[indexes], yf[indexes])
-    print(indexes[0])
+    print(xf[indexes[0]], xf[indexes[1]])
     
-
-    
-
-
     def calcFreq(index, freq):
-        dif = math.absolute(freq - index)
+        dif = math.fabs(freq - index)
         return dif
 
     #encontre na tabela duas frequencias proximas às frequencias de pico encontradas e descubra qual foi a tecla
 
     
-    if calcFreq(indexes[0], 1209) <= 10 and calcFreq(indexes[1], 697) <= 10:
+    if calcFreq(xf[indexes[1]], 1209) <= 10 and calcFreq(xf[indexes[0]], 697) <= 10:
         char = "1"
-    elif calcFreq(indexes[0], 1336) <= 10 and calcFreq(indexes[1], 697) <= 10:
+    elif calcFreq(xf[indexes[1]], 1336) <= 10 and calcFreq(xf[indexes[0]], 697) <= 10:
         char = "2"
-    elif calcFreq(indexes[0], 1477) <= 10 and calcFreq(indexes[1], 697) <= 10:
+    elif calcFreq(xf[indexes[1]], 1477) <= 10 and calcFreq(xf[indexes[0]], 697) <= 10:
         char = "3"
-    elif calcFreq(indexes[0], 1633) <= 10 and calcFreq(indexes[1], 697) <= 10:
+    elif calcFreq(xf[indexes[1]], 1633) <= 10 and calcFreq(xf[indexes[0]], 697) <= 10:
         char = "A"
-    elif calcFreq(indexes[0], 1209) <= 10 and calcFreq(indexes[1], 770) <= 10:
+    elif calcFreq(xf[indexes[1]], 1209) <= 10 and calcFreq(xf[indexes[0]], 770) <= 10:
         char = "4"
-    elif calcFreq(indexes[0], 1336) <= 10 and calcFreq(indexes[1], 770) <= 10:
+    elif calcFreq(xf[indexes[1]], 1336) <= 10 and calcFreq(xf[indexes[0]], 770) <= 10:
         char = "5"
-    elif calcFreq(indexes[0], 1477) <= 10 and calcFreq(indexes[1], 770) <= 10:
+    elif calcFreq(xf[indexes[1]], 1477) <= 10 and calcFreq(xf[indexes[0]], 770) <= 10:
         char = "6"
-    elif calcFreq(indexes[0], 1633) <= 10 and calcFreq(indexes[1], 770) <= 10:
+    elif calcFreq(xf[indexes[1]], 1633) <= 10 and calcFreq(xf[indexes[0]], 770) <= 10:
         char = "B"
-    elif calcFreq(indexes[0], 1209) <= 10 and calcFreq(indexes[1], 852) <= 10:
+    elif calcFreq(xf[indexes[1]], 1209) <= 10 and calcFreq(xf[indexes[0]], 852) <= 10:
         char = "7"
-    elif calcFreq(indexes[0], 1336) <= 10 and calcFreq(indexes[1], 852) <= 10:
+    elif calcFreq(xf[indexes[1]], 1336) <= 10 and calcFreq(xf[indexes[0]], 852) <= 10:
         char = "8"
-    elif calcFreq(indexes[0], 1477) <= 10 and calcFreq(indexes[1], 852) <= 10:
+    elif calcFreq(xf[indexes[1]], 1477) <= 10 and calcFreq(xf[indexes[0]], 852) <= 10:
         char = "9"
-    elif calcFreq(indexes[0], 1633) <= 10 and calcFreq(indexes[1], 852) <= 10:
+    elif calcFreq(xf[indexes[1]], 1633) <= 10 and calcFreq(xf[indexes[0]], 852) <= 10:
         char = "C"
-    elif calcFreq(indexes[0], 1209) <= 10 and calcFreq(indexes[1], 941) <= 10:
+    elif calcFreq(xf[indexes[1]], 1209) <= 10 and calcFreq(xf[indexes[0]], 941) <= 10:
         char = "X"
-    elif calcFreq(indexes[0], 1336) <= 10 and calcFreq(indexes[1], 941) <= 10:
+    elif calcFreq(xf[indexes[1]], 1336) <= 10 and calcFreq(xf[indexes[0]], 941) <= 10:
         char = "0"
-    elif calcFreq(indexes[0], 1477) <= 10 and calcFreq(indexes[1], 941) <= 10:
+    elif calcFreq(xf[indexes[1]], 1477) <= 10 and calcFreq(xf[indexes[0]], 941) <= 10:
         char = "#"
-    elif calcFreq(indexes[0], 1633) <= 10 and calcFreq(indexes[1], 941) <= 10:
+    elif calcFreq(xf[indexes[1]], 1633) <= 10 and calcFreq(xf[indexes[0]], 941) <= 10:
         char = "D"
     else:
-        char = "Por favor, repita o procedimento de captação do áudio."
+        char = "Nenhum"
 
     #print a tecla.
     print(f"O número captado foi {char}")
