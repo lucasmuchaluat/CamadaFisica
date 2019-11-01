@@ -13,7 +13,7 @@ Repositório para disciplina Camada Física da Computação 2019.2
 
 - [x] Projeto 5 - CRC
 
-- [x] Projeto 6 - Serialização
+- [x] Projeto 6 - Serialização UART
 
 - [x] Projeto 7 - DTMF
 
